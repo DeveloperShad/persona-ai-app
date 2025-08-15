@@ -9,7 +9,7 @@ const openai = new OpenAI({
 
 export async function POST(request: Request) {
   try {
-    const { message, history } = await request.json(); // Now accept history
+    const { message, history, model = 'gpt-4o-mini' } = await request.json(); // Now accept history and model
 
     const messages = [
       { role: 'system', content: piyushSystemPrompt }, // Use the system prompt for Piyush
@@ -18,7 +18,7 @@ export async function POST(request: Request) {
     ];
   
     const response = await openai.chat.completions.create({
-      model: 'gpt-4o-mini', // Or 'gpt-4o' for better results
+      model: model, // Use the selected model
       messages,
       max_tokens: 300, // Increased for more detailed responses
       temperature: 0.7,

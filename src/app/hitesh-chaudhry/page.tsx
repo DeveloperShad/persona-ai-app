@@ -12,6 +12,10 @@ import {
   Paper,
   Chip,
   IconButton,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import {
   ArrowBack as ArrowBackIcon,
@@ -21,6 +25,7 @@ import {
 import { useRouter } from "next/navigation";
 import { Loader } from "@/components/Loader";
 import { IMessage } from "@/types/types";
+import { OPENAI_MODELS } from "@/constants/openai-models";
 
   const expertise = [
     "JavaScript",
@@ -46,6 +51,7 @@ export default function HiteshChaudhryChat() {
   const [messages, setMessages] = useState<IMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [selectedModel, setSelectedModel] = useState("gpt-4o-mini");
 
   const handleSendMessage = async () => {
     if (!inputMessage.trim()) return;
@@ -68,6 +74,7 @@ export default function HiteshChaudhryChat() {
       body: JSON.stringify({
         message: inputMessage,
         history: messages,
+        model: selectedModel,
       }),
     });
     const data = await response.json();
@@ -107,7 +114,7 @@ export default function HiteshChaudhryChat() {
         >
           HC
         </Avatar>
-        <Box>
+        <Box sx={{ flex: 1 }}>
           <Typography variant="h4" component="h1">
             Chat with Hitesh Choudhry
           </Typography>
@@ -120,6 +127,27 @@ export default function HiteshChaudhryChat() {
             Web Development Educator & YouTuber
           </Typography>
         </Box>
+        
+        {/* Model Selection */}
+        <FormControl size="small" sx={{ minWidth: 200 }}>
+          <InputLabel>AI Model</InputLabel>
+          <Select
+            value={selectedModel}
+            label="AI Model"
+            onChange={(e) => setSelectedModel(e.target.value)}
+          >
+            {OPENAI_MODELS.map((model) => (
+              <MenuItem key={model.id} value={model.id}>
+                <Box>
+                  <Typography variant="body2">{model.name}</Typography>
+                  <Typography variant="caption" color="text.secondary">
+                    {model.description}
+                  </Typography>
+                </Box>
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Box>
 
       {/* Expertise Tags */}

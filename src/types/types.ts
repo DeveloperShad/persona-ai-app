@@ -4,3 +4,9 @@ export interface IMessage {
   role: "user" | "assistant";
   timestamp: Date;
 }
+
+export interface OpenAIModel {
+  id: string;
+  name: string;
+  description: string;
+}
