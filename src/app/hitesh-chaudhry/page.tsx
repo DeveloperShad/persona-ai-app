@@ -97,39 +97,58 @@ export default function HiteshChaudhryChat() {
   return (
     <>
     {loading && <Loader />}
-    <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
+    <Container maxWidth="lg" sx={{ 
+      mt: { xs: 1, sm: 2 }, 
+      mb: { xs: 2, sm: 4 },
+      px: { xs: 1, sm: 2 }
+    }}>
       {/* Header */}
-      <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
-        <IconButton onClick={() => router.back()} sx={{ mr: 2 }}>
-          <ArrowBackIcon />
-        </IconButton>
-        <Avatar
-          sx={{
-            width: 60,
-            height: 60,
-            bgcolor: "#4285f4",
-            mr: 2,
-            fontSize: "1.5rem",
-          }}
-        >
-          HC
-        </Avatar>
-        <Box sx={{ flex: 1 }}>
-          <Typography variant="h4" component="h1">
-            Chat with Hitesh Choudhry
-          </Typography>
-          <Typography
-            variant="subtitle1"
-            color="text.secondary"
-            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+      <Box sx={{ 
+        display: "flex", 
+        alignItems: { xs: "flex-start", sm: "center" },
+        flexDirection: { xs: "column", sm: "row" },
+        gap: { xs: 2, sm: 0 },
+        mb: 3 
+      }}>
+        <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
+          <IconButton onClick={() => router.back()} sx={{ mr: 2 }}>
+            <ArrowBackIcon />
+          </IconButton>
+          <Avatar
+            sx={{
+              width: { xs: 50, sm: 60 },
+              height: { xs: 50, sm: 60 },
+              bgcolor: "#4285f4",
+              mr: 2,
+              fontSize: { xs: "1.2rem", sm: "1.5rem" },
+            }}
           >
-            <YouTubeIcon sx={{ fontSize: 16 }} />
-            Web Development Educator & YouTuber
-          </Typography>
+            HC
+          </Avatar>
+          <Box sx={{ flex: 1 }}>
+            <Typography 
+              variant="h4" 
+              component="h1"
+              sx={{ fontSize: { xs: "1.5rem", sm: "2.125rem" } }}
+            >
+              Chat with Hitesh Choudhry
+            </Typography>
+            <Typography
+              variant="subtitle1"
+              color="text.secondary"
+              sx={{ display: "flex", alignItems: "center", gap: 1 }}
+            >
+              <YouTubeIcon sx={{ fontSize: 16 }} />
+              Web Development Educator & YouTuber
+            </Typography>
+          </Box>
         </Box>
         
         {/* Model Selection */}
-        <FormControl size="small" sx={{ minWidth: 200 }}>
+        <FormControl size="small" sx={{ 
+          minWidth: { xs: "100%", sm: 200 },
+          width: { xs: "100%", sm: "auto" }
+        }}>
           <InputLabel>AI Model</InputLabel>
           <Select
             value={selectedModel}
@@ -168,17 +187,29 @@ export default function HiteshChaudhryChat() {
         </Box>
       </Box>
 
-      <Box sx={{ display: "flex", gap: 3, height: "calc(100vh - 300px)" }}>
+      <Box sx={{ 
+        display: "flex", 
+        flexDirection: { xs: "column", lg: "row" },
+        gap: 3, 
+        height: { xs: "auto", lg: "calc(100vh - 300px)" },
+        minHeight: { xs: "60vh", lg: "auto" }
+      }}>
         {/* Chat Area */}
-        <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+        <Box sx={{ 
+          flex: 1, 
+          display: "flex", 
+          flexDirection: "column",
+          minHeight: { xs: "60vh", lg: "auto" }
+        }}>
           {/* Messages */}
           <Paper
             sx={{
               flex: 1,
-              p: 2,
+              p: { xs: 1, sm: 2 },
               mb: 2,
               overflowY: "auto",
               bgcolor: "grey.50",
+              minHeight: { xs: "50vh", lg: "auto" }
             }}
           >
             {messages.map((message) => (
@@ -192,19 +223,25 @@ export default function HiteshChaudhryChat() {
               >
                 <Paper
                   sx={{
-                    p: 2,
-                    maxWidth: "70%",
+                    p: { xs: 1.5, sm: 2 },
+                    maxWidth: { xs: "85%", sm: "70%" },
                     bgcolor: message.role === "user" ? "primary.main" : "white",
                     color: message.role === "user" ? "white" : "text.primary",
                   }}
                 >
-                  <Typography variant="body1">{message.content}</Typography>
+                  <Typography 
+                    variant="body1" 
+                    sx={{ fontSize: { xs: "0.875rem", sm: "1rem" } }}
+                  >
+                    {message.content}
+                  </Typography>
                   <Typography
                     variant="caption"
                     sx={{
                       opacity: 0.7,
                       display: "block",
                       mt: 1,
+                      fontSize: { xs: "0.7rem", sm: "0.75rem" }
                     }}
                   >
                     {message.timestamp.toLocaleTimeString()}
@@ -215,21 +252,29 @@ export default function HiteshChaudhryChat() {
           </Paper>
 
           {/* Input Area */}
-          <Box sx={{ display: "flex", gap: 1 }}>
+          <Box sx={{ 
+            display: "flex", 
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 1 
+          }}>
             <TextField
               fullWidth
               placeholder="Ask Hitesh about web development, JavaScript, React..."
               value={inputMessage}
               onChange={(e) => setInputMessage(e.target.value)}
-              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+              onKeyPress={(e) => e.key === "Enter" && !e.shiftKey && handleSendMessage()}
               multiline
               maxRows={3}
+              size="small"
             />
             <Button
               variant="contained"
               onClick={handleSendMessage}
               disabled={!inputMessage.trim()}
-              sx={{ minWidth: 56 }}
+              sx={{ 
+                minWidth: { xs: "100%", sm: 56 },
+                height: { xs: "40px", sm: "auto" }
+              }}
             >
               <SendIcon />
             </Button>
@@ -237,15 +282,25 @@ export default function HiteshChaudhryChat() {
         </Box>
 
         {/* Sample Questions Sidebar */}
-        <Card sx={{ width: 300, height: "fit-content" }}>
-          <CardContent>
+        <Card sx={{ 
+          width: { xs: "100%", lg: 300 }, 
+          height: "fit-content",
+          order: { xs: -1, lg: 0 }
+        }}>
+          <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
             <Typography variant="h6" gutterBottom>
               Sample Questions
             </Typography>
             <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
               Try asking these questions to get started:
             </Typography>
-            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+            <Box sx={{ 
+              display: "flex", 
+              flexDirection: "column", 
+              gap: 1,
+              maxHeight: { xs: "200px", lg: "none" },
+              overflowY: { xs: "auto", lg: "visible" }
+            }}>
               {sampleQuestions.map((question, index) => (
                 <Button
                   key={index}
@@ -256,6 +311,7 @@ export default function HiteshChaudhryChat() {
                     textAlign: "left",
                     justifyContent: "flex-start",
                     textTransform: "none",
+                    fontSize: { xs: "0.8rem", sm: "0.875rem" }
                   }}
                 >
                   {question}
