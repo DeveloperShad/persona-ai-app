@@ -1,0 +1,243 @@
+"use client";
+import React, { useState } from "react";
+import {
+  Container,
+  Typography,
+  Box,
+  Button,
+  Card,
+  CardContent,
+  Avatar,
+  TextField,
+  Paper,
+  Chip,
+  IconButton,
+} from "@mui/material";
+import {
+  ArrowBack as ArrowBackIcon,
+  Send as SendIcon,
+  YouTube as YouTubeIcon,
+} from "@mui/icons-material";
+import { useRouter } from "next/navigation";
+import { Loader } from "@/components/Loader";
+import { IMessage } from "@/types/types";
+
+  const expertise = [
+    "JavaScript",
+    "React.js",
+    "Node.js",
+    "Web Development",
+    "Frontend",
+    "Backend",
+    "API Development",
+    "MongoDB",
+  ];
+
+  const sampleQuestions = [
+    "How do I get started with React?",
+    "What's the difference between let, const, and var?",
+    "How to build a REST API with Node.js?",
+    "Best practices for JavaScript development?",
+  ];
+
+
+export default function HiteshChaudhryChat() {
+  const router = useRouter();
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [inputMessage, setInputMessage] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleSendMessage = async () => {
+    if (!inputMessage.trim()) return;
+    setLoading(true)
+    const userMessage: IMessage = {
+      id: Date.now().toString(),
+      content: inputMessage,
+      role: "user",
+      timestamp: new Date(),
+    };
+
+    setMessages((prev) => [...prev, userMessage]);
+
+    // Simulate AI response (you would replace this with actual AI integration)
+    const response = await fetch("/api/ask-hitesh", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        message: inputMessage,
+        history: messages,
+      }),
+    });
+    const data = await response.json();
+    const aiResponse: IMessage = {
+      id: (Date.now() + 1).toString(),
+      content: data.reply,
+      role: "assistant",
+      timestamp: new Date(),
+    };
+    setMessages((prev) => [...prev, aiResponse]);
+
+    setInputMessage("");
+    setLoading(false);
+  };
+
+  const handleQuestionClick = (question: string) => {
+    setInputMessage(question);
+  };
+
+  return (
+    <>
+    {loading && <Loader />}
+    <Container maxWidth="lg" sx={{ mt: 2, mb: 4 }}>
+      {/* Header */}
+      <Box sx={{ display: "flex", alignItems: "center", mb: 3 }}>
+        <IconButton onClick={() => router.back()} sx={{ mr: 2 }}>
+          <ArrowBackIcon />
+        </IconButton>
+        <Avatar
+          sx={{
+            width: 60,
+            height: 60,
+            bgcolor: "#4285f4",
+            mr: 2,
+            fontSize: "1.5rem",
+          }}
+        >
+          HC
+        </Avatar>
+        <Box>
+          <Typography variant="h4" component="h1">
+            Chat with Hitesh Choudhry
+          </Typography>
+          <Typography
+            variant="subtitle1"
+            color="text.secondary"
+            sx={{ display: "flex", alignItems: "center", gap: 1 }}
+          >
+            <YouTubeIcon sx={{ fontSize: 16 }} />
+            Web Development Educator & YouTuber
+          </Typography>
+        </Box>
+      </Box>
+
+      {/* Expertise Tags */}
+      <Box sx={{ mb: 3 }}>
+        <Typography variant="subtitle2" gutterBottom>
+          Expertise:
+        </Typography>
+        <Box sx={{ display: "flex", flexWrap: "wrap", gap: 1 }}>
+          {expertise.map((skill) => (
+            <Chip
+              key={skill}
+              label={skill}
+              size="small"
+              color="primary"
+              variant="outlined"
+            />
+          ))}
+        </Box>
+      </Box>
+
+      <Box sx={{ display: "flex", gap: 3, height: "calc(100vh - 300px)" }}>
+        {/* Chat Area */}
+        <Box sx={{ flex: 1, display: "flex", flexDirection: "column" }}>
+          {/* Messages */}
+          <Paper
+            sx={{
+              flex: 1,
+              p: 2,
+              mb: 2,
+              overflowY: "auto",
+              bgcolor: "grey.50",
+            }}
+          >
+            {messages.map((message) => (
+              <Box
+                key={message.id}
+                sx={{
+                  display: "flex",
+                  justifyContent: message.role === "user" ? "flex-end" : "flex-start",
+                  mb: 2,
+                }}
+              >
+                <Paper
+                  sx={{
+                    p: 2,
+                    maxWidth: "70%",
+                    bgcolor: message.role === "user" ? "primary.main" : "white",
+                    color: message.role === "user" ? "white" : "text.primary",
+                  }}
+                >
+                  <Typography variant="body1">{message.content}</Typography>
+                  <Typography
+                    variant="caption"
+                    sx={{
+                      opacity: 0.7,
+                      display: "block",
+                      mt: 1,
+                    }}
+                  >
+                    {message.timestamp.toLocaleTimeString()}
+                  </Typography>
+                </Paper>
+              </Box>
+            ))}
+          </Paper>
+
+          {/* Input Area */}
+          <Box sx={{ display: "flex", gap: 1 }}>
+            <TextField
+              fullWidth
+              placeholder="Ask Hitesh about web development, JavaScript, React..."
+              value={inputMessage}
+              onChange={(e) => setInputMessage(e.target.value)}
+              onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
+              multiline
+              maxRows={3}
+            />
+            <Button
+              variant="contained"
+              onClick={handleSendMessage}
+              disabled={!inputMessage.trim()}
+              sx={{ minWidth: 56 }}
+            >
+              <SendIcon />
+            </Button>
+          </Box>
+        </Box>
+
+        {/* Sample Questions Sidebar */}
+        <Card sx={{ width: 300, height: "fit-content" }}>
+          <CardContent>
+            <Typography variant="h6" gutterBottom>
+              Sample Questions
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+              Try asking these questions to get started:
+            </Typography>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              {sampleQuestions.map((question, index) => (
+                <Button
+                  key={index}
+                  variant="outlined"
+                  size="small"
+                  onClick={() => handleQuestionClick(question)}
+                  sx={{
+                    textAlign: "left",
+                    justifyContent: "flex-start",
+                    textTransform: "none",
+                  }}
+                >
+                  {question}
+                </Button>
+              ))}
+            </Box>
+          </CardContent>
+        </Card>
+      </Box>
+    </Container>
+    </>
+  );
+}
